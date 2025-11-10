@@ -44,7 +44,10 @@
             btnCarregarIcone = new Button();
             numericAPIPort = new NumericUpDown();
             textIconPath = new TextBox();
+            numericAutoRefresh = new NumericUpDown();
+            label8 = new Label();
             ((System.ComponentModel.ISupportInitialize)numericAPIPort).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericAutoRefresh).BeginInit();
             SuspendLayout();
             // 
             // textAPPTitle
@@ -139,7 +142,8 @@
             // 
             // btnSalvar
             // 
-            btnSalvar.Location = new Point(12, 329);
+            btnSalvar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btnSalvar.Location = new Point(12, 369);
             btnSalvar.Name = "btnSalvar";
             btnSalvar.Size = new Size(300, 25);
             btnSalvar.TabIndex = 12;
@@ -150,7 +154,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(12, 273);
+            label7.Location = new Point(12, 317);
             label7.Name = "label7";
             label7.Size = new Size(36, 15);
             label7.TabIndex = 14;
@@ -158,7 +162,7 @@
             // 
             // btnCarregarIcone
             // 
-            btnCarregarIcone.Location = new Point(287, 290);
+            btnCarregarIcone.Location = new Point(287, 334);
             btnCarregarIcone.Name = "btnCarregarIcone";
             btnCarregarIcone.Size = new Size(25, 23);
             btnCarregarIcone.TabIndex = 15;
@@ -178,16 +182,36 @@
             // 
             // textIconPath
             // 
-            textIconPath.Location = new Point(12, 291);
+            textIconPath.Location = new Point(12, 335);
             textIconPath.Name = "textIconPath";
             textIconPath.Size = new Size(269, 23);
             textIconPath.TabIndex = 18;
             // 
-            // CreateForm
+            // numericAutoRefresh
+            // 
+            numericAutoRefresh.InterceptArrowKeys = false;
+            numericAutoRefresh.Location = new Point(12, 291);
+            numericAutoRefresh.Maximum = new decimal(new int[] { 9999, 0, 0, 0 });
+            numericAutoRefresh.Name = "numericAutoRefresh";
+            numericAutoRefresh.Size = new Size(300, 23);
+            numericAutoRefresh.TabIndex = 20;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(12, 273);
+            label8.Name = "label8";
+            label8.Size = new Size(107, 15);
+            label8.TabIndex = 19;
+            label8.Text = "Atualização Página";
+            // 
+            // ConfigForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(329, 366);
+            ClientSize = new Size(329, 406);
+            Controls.Add(numericAutoRefresh);
+            Controls.Add(label8);
             Controls.Add(textIconPath);
             Controls.Add(numericAPIPort);
             Controls.Add(btnCarregarIcone);
@@ -205,12 +229,13 @@
             Controls.Add(textAPIKey);
             Controls.Add(textAPPTitle);
             MaximizeBox = false;
-            MaximumSize = new Size(345, 405);
-            MinimumSize = new Size(345, 405);
-            Name = "CreateForm";
+            MaximumSize = new Size(345, 445);
+            MinimumSize = new Size(345, 445);
+            Name = "ConfigForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "WebView Request Capture (Config)";
             ((System.ComponentModel.ISupportInitialize)numericAPIPort).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericAutoRefresh).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -233,5 +258,7 @@
         private Button btnCarregarIcone;
         private NumericUpDown numericAPIPort;
         private TextBox textIconPath;
+        private NumericUpDown numericAutoRefresh;
+        private Label label8;
     }
 }

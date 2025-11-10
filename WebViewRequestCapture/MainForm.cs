@@ -12,7 +12,7 @@ namespace WebViewRequestCapture
     {
         [DllImport("Shell32.dll", CharSet = CharSet.Auto)]
         public static extern int ExtractIconEx(string lpszFile, int nIconIndex,
-        
+
         IntPtr[] phiconLarge, IntPtr[] phiconSmall, int nIcons);
 
         private Dictionary<string, object> _requestHeaders = new();
@@ -31,6 +31,24 @@ namespace WebViewRequestCapture
             IniciarServidorApi();
         }
 
+        private void CoreWebView2_DOMContentLoaded(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2DOMContentLoadedEventArgs e)
+        {
+            webView.CoreWebView2.DOMContentLoaded -= CoreWebView2_DOMContentLoaded;
+
+            IniciarCaptura();
+
+            if (Properties.Settings.Default.Auto_Refresh > 0)
+            {
+                var timer = new System.Windows.Forms.Timer();
+                timer.Interval = Properties.Settings.Default.Auto_Refresh * 1000;
+                timer.Tick += (sender, args) =>
+                {
+                    webView.CoreWebView2.Reload();
+                };
+                timer.Start();
+            }
+        }
+
         private async void InicializarWebView2()
         {
             webView = new WebView2
@@ -40,12 +58,11 @@ namespace WebViewRequestCapture
             Controls.Add(webView);
 
             await webView.EnsureCoreWebView2Async();
+            webView.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
             webView.CoreWebView2.Navigate(Properties.Settings.Default.Start_Page);
 
             webView.BringToFront();
             webView.Focus();
-
-            IniciarCaptura();
         }
 
         private async void IniciarCaptura()
@@ -102,42 +119,44 @@ namespace WebViewRequestCapture
                     }
                 };
 
-            webView.CoreWebView2.GetDevToolsProtocolEventReceiver("Network.responseReceived").DevToolsProtocolEventReceived += async (sender, args) =>
-            {
-                var json = JObject.Parse(args.ParameterObjectAsJson);
-                var response = json["response"];
-                var requestId = json["requestId"]?.ToString();
-                var mimeType = response?["mimeType"]?.ToString();
-                var url = response?["url"]?.ToString();
-
-                if (mimeType?.Contains(Properties.Settings.Default.Mime_Type_Filter) == true &&
-                    !string.IsNullOrEmpty(url) &&
-                    url.Contains(Properties.Settings.Default.URL_Filter) &&
-                    requestId != null)
+            webView.CoreWebView2
+                .GetDevToolsProtocolEventReceiver("Network.responseReceived")
+                .DevToolsProtocolEventReceived += async (sender, args) =>
                 {
-                    try
-                    {
-                        var resultado = await webView.CoreWebView2.CallDevToolsProtocolMethodAsync(
-                            "Network.getResponseBody",
-                            $"{{\"requestId\":\"{requestId}\"}}"
-                        );
+                    var json = JObject.Parse(args.ParameterObjectAsJson);
+                    var response = json["response"];
+                    var requestId = json["requestId"]?.ToString();
+                    var mimeType = response?["mimeType"]?.ToString();
+                    var url = response?["url"]?.ToString();
 
-                        Dictionary<string, string> dcDados = new Dictionary<string, string>()
+                    if (mimeType?.Contains(Properties.Settings.Default.Mime_Type_Filter) == true &&
+                        !string.IsNullOrEmpty(url) &&
+                        url.Contains(Properties.Settings.Default.URL_Filter) &&
+                        requestId != null)
+                    {
+                        try
                         {
-                            { "requestId", requestId },
-                            { "url", url },
-                            { "mimeType", mimeType },
-                            { "response", resultado.ToString() }
-                        };
+                            var resultado = await webView.CoreWebView2.CallDevToolsProtocolMethodAsync(
+                                "Network.getResponseBody",
+                                $"{{\"requestId\":\"{requestId}\"}}"
+                            );
 
-                        respostas[respostas.Count + 1] = dcDados;
+                            Dictionary<string, string> dcDados = new Dictionary<string, string>()
+                            {
+                                { "requestId", requestId },
+                                { "url", url },
+                                { "mimeType", mimeType },
+                                { "response", resultado.ToString() }
+                            };
+
+                            respostas[respostas.Count + 1] = dcDados;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Erro ao capturar resposta: {ex.Message}");
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Erro ao capturar resposta: {ex.Message}");
-                    }
-                }
-            };
+                };
         }
 
         private void IniciarServidorApi()

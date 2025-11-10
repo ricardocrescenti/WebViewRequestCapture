@@ -94,5 +94,17 @@ namespace WebViewRequestCapture.Properties {
                 this["Mime_Type_Filter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Auto_Refresh {
+            get {
+                return ((int)(this["Auto_Refresh"]));
+            }
+            set {
+                this["Auto_Refresh"] = value;
+            }
+        }
     }
 }

@@ -20,5 +20,8 @@
     <Setting Name="Mime_Type_Filter" Type="System.String" Scope="User">
       <Value Profile="(Default)">application/json</Value>
     </Setting>
+    <Setting Name="Auto_Refresh" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

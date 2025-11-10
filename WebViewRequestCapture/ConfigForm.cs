@@ -24,6 +24,7 @@ namespace WebViewRequestCapture
             textStartPage.Text = Properties.Settings.Default.Start_Page;
             textURLFilter.Text = Properties.Settings.Default.URL_Filter;
             textMimeTypeFilter.Text = Properties.Settings.Default.Mime_Type_Filter;
+            numericAutoRefresh.Value = Properties.Settings.Default.Auto_Refresh;
         }
 
         private void btnCarregarIcone_Click(object sender, EventArgs e)
@@ -57,6 +58,7 @@ namespace WebViewRequestCapture
                 Properties.Settings.Default.Start_Page = textStartPage.Text;
                 Properties.Settings.Default.URL_Filter = textURLFilter.Text;
                 Properties.Settings.Default.Mime_Type_Filter = textMimeTypeFilter.Text;
+                Properties.Settings.Default.Auto_Refresh = Convert.ToInt32(numericAutoRefresh.Value);
                 Properties.Settings.Default.Save();
 
                 if (textIconPath.Text.Length > 0)
